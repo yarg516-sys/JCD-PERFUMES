@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JCD PERFUMES | Haute Parfumerie • Luxury Edition</title>
+  <meta name="description" content="Extraits de Parfum concentrated at an unprecedented 35% oil purity. Hand-polished silver flacons, midnight sapphire velvet caskets." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sapphire: {
+              400: '#38bdf8',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#0a1d4a',
+              950: '#060d24',
+            },
+            silver: {
+              100: '#f8fafc',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+            }
+          },
+          fontFamily: {
+            cinzel: ['Cinzel', 'Georgia', 'serif'],
+            cormorant: ['Cormorant Garamond', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Three.js CDN for 3D Perfume Bottle WebGL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-[#030712] text-slate-100 min-h-screen relative selection:bg-blue-600 selection:text-white">
+
+  <!-- Ambient Fog & Particle Canvas -->
+  <canvas id="fog-canvas"></canvas>
+
+  <!-- Ambient Cursor Glow Follower -->
+  <div class="ambient-glow"></div>
+
+  <!-- ========================================================================
+       TOP NAVIGATION BAR (Exact Match to Screenshot Header)
+       ======================================================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#030712]/80 border-b border-blue-900/30 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo Branding (From Screenshot) -->
+      <a href="#" class="flex items-center gap-3 group">
+        <!-- Geometric Diamond Emblem -->
+        <div class="w-10 h-10 rounded-lg border border-blue-500/40 bg-gradient-to-br from-blue-950 to-slate-900 flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.3)] group-hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] transition-all">
+          <svg class="w-6 h-6 text-blue-400 group-hover:text-blue-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-baseline gap-1.5 leading-none">
+            <span class="font-cinzel text-lg sm:text-xl font-bold tracking-[0.22em] text-white">J C D</span>
+            <span class="font-cinzel text-lg sm:text-xl font-bold tracking-[0.22em] text-sapphire-gradient">PERFUMES</span>
+          </div>
+          <p class="text-[9px] sm:text-[10px] font-sans tracking-[0.28em] text-slate-400 uppercase mt-0.5">
+            HAUTE PARFUMERIE • LUXURY EDITION
+          </p>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-cinzel text-slate-300">
+        <a href="#hero" class="hover:text-blue-400 transition-colors">Imperial Flacon</a>
+        <a href="#olfactory" class="hover:text-blue-400 transition-colors">Scent Alchemy</a>
+        <a href="#vault" class="hover:text-blue-400 transition-colors">The Vault</a>
+        <a href="#packaging" class="hover:text-blue-400 transition-colors">Packaging Art</a>
+        <a href="#customizer" class="hover:text-blue-400 transition-colors">Bespoke Lab</a>
+      </nav>
+
+      <!-- Right Header Controls (Cloud Live + Sound + Cart + Menu) -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        
+        <!-- Cloud Live Status Pill (From Screenshot) -->
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-950/40 text-[10px] tracking-widest uppercase font-mono text-blue-300">
+          <span class="text-blue-400">⚡</span>
+          <span>CLOUD LIVE</span>
+        </div>
+
+        <!-- Ambient Luxury Sound Toggle -->
+        <button id="sound-toggle-btn" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-700/60 bg-slate-900/60 hover:border-blue-400/80 transition-all text-[10px] font-mono tracking-wider text-slate-300" title="Toggle Bespoke Scent Audio Ambiance">
+          <span id="sound-waves" class="flex items-center h-3 opacity-30">
+            <span class="sound-bar" style="animation-delay: 0s;"></span>
+            <span class="sound-bar" style="animation-delay: 0.2s;"></span>
+            <span class="sound-bar" style="animation-delay: 0.4s;"></span>
+          </span>
+          <span id="sound-status-text" class="hidden sm:inline">SOUND: OFF</span>
+        </button>
+
+        <!-- Shopping Bag / Royal Vault Bag with Badge '1' (From Screenshot) -->
+        <button onclick="window.toggleCartDrawer(true)" class="relative p-2.5 rounded-full border border-blue-500/30 bg-blue-950/40 hover:border-blue-400 text-slate-200 hover:text-white transition-all shadow-[0_0_15px_rgba(37,99,235,0.2)]" aria-label="Open Royal Vault Casket">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+          <!-- Exact screenshot blue badge with number 1 -->
+          <span class="cart-count-badge absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-blue-600 to-sky-400 text-white font-bold text-[11px] flex items-center justify-center shadow-[0_0_10px_#2563eb] transition-transform">
+            1
+          </span>
+        </button>
+
+        <!-- Hamburger Menu Button -->
+        <button onclick="document.getElementById('mobile-drawer').classList.toggle('hidden')" class="p-2 text-slate-300 hover:text-white md:hidden">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="hidden md:hidden border-t border-blue-900/40 bg-[#030712]/95 px-6 py-6 flex flex-col gap-4 font-cinzel text-xs uppercase tracking-widest">
+      <a href="#hero" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-blue-400">Imperial Flacon</a>
+      <a href="#olfactory" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-slate-300">Scent Alchemy</a>
+      <a href="#vault" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-slate-300">The Vault</a>
+      <a href="#packaging" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-slate-300">Packaging Art</a>
+      <a href="#customizer" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-slate-300">Bespoke Lab</a>
+      <a href="#quiz" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="py-2 text-slate-300">Scent Quiz</a>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       HERO SECTION (Strict Match to User's Screenshot & Reference)
+       ======================================================================== -->
+  <section id="hero" class="relative pt-6 pb-20 sm:pt-12 sm:pb-32 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Column: Typography, Badges, CTAs (Exact Layout from Screenshot) -->
+        <div class="lg:col-span-7 z-10 text-center lg:text-left flex flex-col items-center lg:items-start">
+          
+          <!-- Badge Pill (From Screenshot) -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full badge-sapphire text-[11px] sm:text-xs font-cinzel font-semibold tracking-[0.2em] text-slate-100 uppercase mb-6 sm:mb-8">
+            <span class="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_#38bdf8] animate-ping"></span>
+            <span id="edition-badge-text">SILVER & SAPPHIRE IMPERIAL EDITION</span>
+          </div>
+
+          <!-- Bold Regal Animated Heading (From Screenshot) -->
+          <h1 class="font-cinzel text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.08] mb-6">
+            <span class="block text-silver-gradient">THE SCENT OF</span>
+            <span class="block text-silver-gradient">ROYALTY &amp;</span>
+            <span class="block text-sapphire-gradient">PURE SILVER</span>
+          </h1>
+
+          <!-- Body Description (From Screenshot) -->
+          <p class="font-cormorant text-lg sm:text-xl md:text-2xl text-slate-300 leading-relaxed max-w-2xl font-light mb-8">
+            Extraits de Parfum concentrated at an unprecedented <span class="text-white font-medium">35% oil purity</span>. Bottled within hand-polished silver flacons, resting inside crush-resistant midnight sapphire velvet caskets with master-embossed authenticity certificates.
+          </p>
+
+          <!-- 3 Checkmark Features (From Screenshot) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-xl mb-10 text-left">
+            <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border border-blue-900/40 bg-blue-950/20 backdrop-blur-md">
+              <span class="text-blue-400 text-sm font-bold">✓</span>
+              <span class="text-xs font-sans font-medium text-slate-200">35% Pure Oil Extrait</span>
+            </div>
+            <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border border-blue-900/40 bg-blue-950/20 backdrop-blur-md">
+              <span class="text-blue-400 text-sm font-bold">✓</span>
+              <span class="text-xs font-sans font-medium text-slate-200">Heavy Silver Alloy Cap</span>
+            </div>
+            <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border border-blue-900/40 bg-blue-950/20 backdrop-blur-md">
+              <span class="text-blue-400 text-sm font-bold">✓</span>
+              <span class="text-xs font-sans font-medium text-slate-200">Midnight Velvet Casket</span>
+            </div>
+          </div>
+
+          <!-- Screenshot Exact Buttons -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full max-w-lg mb-8">
+            <!-- Primary Silver Gradient Button -->
+            <a href="#vault" class="btn-silver-vault px-8 py-4 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm shadow-xl text-center">
+              <span>☆</span>
+              <span>EXPLORE ROYAL VAULT</span>
+            </a>
+            
+            <!-- Secondary Packaging Art Button -->
+            <button onclick="window.togglePackagingModal(true)" class="btn-packaging-art px-8 py-4 rounded-xl text-xs sm:text-sm text-center">
+              THE PACKAGING ART
+            </button>
+          </div>
+
+          <!-- Bottom Teaser Pill (From Screenshot) -->
+          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-xl border border-blue-500/20 bg-blue-950/40 backdrop-blur-md">
+            <div class="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-slate-200 shadow-[0_0_8px_#3b82f6]"></div>
+            <div>
+              <p class="text-[9px] uppercase tracking-widest text-slate-400 font-mono">FLACON FINISH</p>
+              <p class="font-cinzel text-xs font-bold text-white tracking-wider">SOLID SILVER &amp; SAPPHIRE</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Interactive 3D WebGL Flacon Canvas -->
+        <div class="lg:col-span-5 relative flex flex-col items-center">
+          
+          <!-- Atmospheric Halo Rings behind the 3D Flacon -->
+          <div class="mist-ring w-[320px] h-[320px] sm:w-[460px] sm:h-[460px]"></div>
+          <div class="mist-ring w-[240px] h-[240px] sm:w-[360px] sm:h-[360px] border-blue-400/20" style="animation-direction: reverse; animation-duration: 22s;"></div>
+
+          <!-- 3D Canvas Container -->
+          <div id="perfume-canvas-container" class="webgl-container">
+            <canvas id="perfume-canvas"></canvas>
+
+            <!-- Floating 3D Interaction Tip Pill -->
+            <div class="absolute top-4 right-4 pointer-events-none px-3 py-1 rounded-full border border-blue-500/30 bg-black/60 backdrop-blur-md text-[10px] text-blue-300 font-mono flex items-center gap-1.5 animate-pulse">
+              <span>↻</span>
+              <span>DRAG 360° TO ROTATE</span>
+            </div>
+
+            <!-- Atomizer Spray Trigger Button -->
+            <button id="btn-test-spray" class="absolute bottom-4 z-20 px-5 py-2.5 rounded-full border border-blue-400/60 bg-gradient-to-r from-blue-900/80 to-blue-950/90 text-white font-cinzel text-xs tracking-wider shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.8)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+              <span class="text-blue-300">✨</span>
+              <span>TEST ATOMIZER SPRAY</span>
+            </button>
+          </div>
+
+          <!-- 3D Edition Swatches / Colorways -->
+          <div class="mt-4 flex items-center gap-2 p-1.5 rounded-full border border-blue-900/40 bg-black/40 backdrop-blur-md">
+            <button onclick="window.switchPerfumeColorway('sapphire')" class="px-3 py-1 rounded-full text-[11px] font-cinzel transition-all bg-blue-600/30 text-white border border-blue-400" title="Silver & Sapphire">
+              Sapphire
+            </button>
+            <button onclick="window.switchPerfumeColorway('noir')" class="px-3 py-1 rounded-full text-[11px] font-cinzel transition-all text-slate-400 hover:text-white border border-transparent hover:border-slate-700" title="Midnight Noir">
+              Noir Oud
+            </button>
+            <button onclick="window.switchPerfumeColorway('platinum')" class="px-3 py-1 rounded-full text-[11px] font-cinzel transition-all text-slate-400 hover:text-white border border-transparent hover:border-slate-700" title="L'Éclat de Platine">
+              Platinum
+            </button>
+            <button onclick="window.switchPerfumeColorway('amber')" class="px-3 py-1 rounded-full text-[11px] font-cinzel transition-all text-slate-400 hover:text-white border border-transparent hover:border-slate-700" title="Crown Amber">
+              Amber
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 2: OLFACTORY PYRAMID & SCENT ALCHEMY
+       ======================================================================== -->
+  <section id="olfactory" class="py-24 relative border-t border-blue-900/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">The Architecture of Scent</p>
+        <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-silver-gradient mb-4">
+          Olfactory Alchemy
+        </h2>
+        <p class="font-cormorant text-lg sm:text-xl text-slate-300 font-light">
+          Constructed with rare harvests and molecular distillations, creating a shifting aura of cold silver and smoldering royal woods that commands the room for over 18 hours.
+        </p>
+
+        <!-- Interactive Tier Selection Tabs -->
+        <div class="flex justify-center gap-2 sm:gap-4 mt-8">
+          <button id="tab-btn-top" onclick="window.switchScentNoteTab('top')" class="px-5 py-2 rounded-full border border-blue-400 bg-blue-600/20 text-white font-cinzel text-xs tracking-wider transition-all">
+            Top Notes (0-30m)
+          </button>
+          <button id="tab-btn-heart" onclick="window.switchScentNoteTab('heart')" class="px-5 py-2 rounded-full border border-slate-800 text-slate-400 hover:text-white font-cinzel text-xs tracking-wider transition-all">
+            Heart Notes (1-4h)
+          </button>
+          <button id="tab-btn-base" onclick="window.switchScentNoteTab('base')" class="px-5 py-2 rounded-full border border-slate-800 text-slate-400 hover:text-white font-cinzel text-xs tracking-wider transition-all">
+            Base Notes (4-18h+)
+          </button>
+        </div>
+      </div>
+
+      <!-- Tier 1: Top Notes -->
+      <div id="scent-tier-top" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Note Card 1 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80" alt="Calabrian Bergamot" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Opening Spark</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Calabrian Bergamot</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Sun-drenched citrus peel hand-pressed in southern Italy, lending an aristocratic freshness sharp as carved crystal.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: Immediate</span>
+                <span class="text-blue-400">Purity: 99.4%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note Card 2 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=600&q=80" alt="Frost Silver Accord" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Molecular Innovation</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Frozen Silver Accord</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Synthesized chilling aldehydes evoking freshly minted platinum, mountain ether, and midnight silver frost.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 45 Mins</span>
+                <span class="text-blue-400">Signature JCD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note Card 3 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=600&q=80" alt="Crushed Pink Pepper" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Spice &amp; Vibrancy</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Madagascar Pink Peppercorn</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                CO2 extract providing an electric micro-effervescence that elevates the initial sillage to magnificent projection.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 1 Hour</span>
+                <span class="text-blue-400">CO2 Supercritical</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tier 2: Heart Notes (Hidden initially) -->
+      <div id="scent-tier-heart" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80" alt="Sapphire Iris" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Imperial Floral</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Midnight Sapphire Iris</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Aged Tuscan Orris butter aged 6 years in subterranean cellars. Velvety, powdery, and majestically mysterious.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 6 Hours</span>
+                <span class="text-blue-400">Value: $75,000/kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=600&q=80" alt="Bulgarian Damascena" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Royal Blossom</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Damascena Rose Otto</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Harvested at dawn before dew evaporates. 4,000 kilograms of petals yielded for a solitary single liter.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 5 Hours</span>
+                <span class="text-blue-400">Dawn Harvest</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1615397349754-cfa2066a298e?auto=format&fit=crop&w=600&q=80" alt="Blue Cedarwood" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Noble Timber</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Atlas Blue Cedar</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Steam-distilled Moroccan wood providing architectural spine and smokeless dry warmth.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 8 Hours</span>
+                <span class="text-blue-400">Aged Timber</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tier 3: Base Notes (Hidden initially) -->
+      <div id="scent-tier-base" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80" alt="Cambodian Oud" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Black Liquid Gold</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">40-Yr Cambodian Oud</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Naturally resinous wild agarwood aged across decades. Balsamic, deep, intoxicating, and legendary.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 24+ Hours</span>
+                <span class="text-blue-400">Wild Harvest</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?auto=format&fit=crop&w=600&q=80" alt="White Ambergris" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Ocean Treasure</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Vintage White Ambergris</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                Naturally cured by sun and sea salt for thirty years. Lends an intimate, skin-warmed oceanic magnetism.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 20 Hours</span>
+                <span class="text-blue-400">Ethically Sourced</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel rounded-2xl p-6 relative overflow-hidden group">
+          <div class="tilt-inner">
+            <div class="h-44 rounded-xl overflow-hidden mb-5 border border-blue-900/30 bg-slate-950">
+              <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80" alt="Platinum Musk" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Silken Fixative</span>
+              <h3 class="font-cinzel text-xl font-bold text-white mt-1">Royal Platinum Musk</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2">
+                A featherlight cloud of clean, tactile luxury that locks the pure extrait oils onto pulse points like silk armor.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono">
+                <span>Longevity: 18 Hours</span>
+                <span class="text-blue-400">High Diffusion</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 3: THE IMPERIAL VAULT (Curated Master Flacons)
+       ======================================================================== -->
+  <section id="vault" class="py-24 relative bg-gradient-to-b from-transparent via-[#060e28]/70 to-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">Masterpiece Archive</p>
+          <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-silver-gradient">
+            The Royal Vault Collection
+          </h2>
+        </div>
+        <p class="font-cormorant text-slate-300 max-w-md text-base sm:text-lg">
+          Each flacon is numbered, hand-sealed with a silver wax stamp, and accompanied by a master-embossed Certificate of Authenticity.
+        </p>
+      </div>
+
+      <!-- 4 Product Flacon Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Product 1 (Screenshot Flagship) -->
+        <div class="tilt-card glass-panel rounded-2xl p-5 flex flex-col justify-between group relative border-blue-500/30 shadow-[0_0_25px_rgba(37,99,235,0.2)]">
+          <div class="tilt-inner">
+            <!-- Badge -->
+            <div class="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-blue-600/80 backdrop-blur-md text-[9px] font-cinzel font-bold text-white tracking-widest uppercase">
+              Flagship Extrait
+            </div>
+            <!-- Image with 3D Float -->
+            <div class="h-64 rounded-xl overflow-hidden mb-5 bg-[#030712] relative border border-blue-900/40">
+              <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80" alt="Silver & Sapphire Imperial Edition" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#060e28] via-transparent to-transparent opacity-60"></div>
+            </div>
+            <!-- Details -->
+            <div class="tilt-element">
+              <p class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">35% PURE OIL EXTRAIT</p>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1 group-hover:text-blue-300 transition-colors">
+                Silver &amp; Sapphire Imperial
+              </h3>
+              <p class="font-cormorant text-slate-300 text-xs mt-1.5 leading-relaxed">
+                Bergamot, Tuscan Orris, Frozen Silver Accord, and 40-Yr Cambodian Oud in polished flacon.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-mono block">100ml / 3.4 FL.OZ</span>
+                  <span class="font-cinzel text-xl font-bold text-white">$380</span>
+                </div>
+                <button onclick="window.addToCart({ id: 'imperial-sapphire', name: 'Silver & Sapphire Imperial Edition', price: 380, image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80' })" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-cinzel text-xs font-bold tracking-wider shadow-[0_0_15px_#2563eb] transition-all">
+                  Acquire
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="tilt-card glass-panel rounded-2xl p-5 flex flex-col justify-between group relative">
+          <div class="tilt-inner">
+            <div class="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-slate-800/80 backdrop-blur-md text-[9px] font-cinzel font-bold text-slate-300 tracking-widest uppercase">
+              Smoky Celestial
+            </div>
+            <div class="h-64 rounded-xl overflow-hidden mb-5 bg-[#030712] relative border border-slate-800">
+              <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=600&q=80" alt="Midnight Noir Oud" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#060e28] via-transparent to-transparent opacity-60"></div>
+            </div>
+            <div class="tilt-element">
+              <p class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">38% PURE OIL EXTRAIT</p>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1 group-hover:text-blue-300 transition-colors">
+                Midnight Noir Oud &amp; Silver
+              </h3>
+              <p class="font-cormorant text-slate-300 text-xs mt-1.5 leading-relaxed">
+                Charcoal birchwood, black truffle, smoked leather, and wild Vietnamese agarwood.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-mono block">100ml / 3.4 FL.OZ</span>
+                  <span class="font-cinzel text-xl font-bold text-white">$420</span>
+                </div>
+                <button onclick="window.addToCart({ id: 'midnight-noir', name: 'Midnight Noir Oud & Silver', price: 420, image: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=400&q=80' })" class="px-4 py-2 rounded-lg border border-slate-700 hover:border-blue-400 text-slate-200 hover:text-white font-cinzel text-xs font-bold tracking-wider transition-all">
+                  Acquire
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="tilt-card glass-panel rounded-2xl p-5 flex flex-col justify-between group relative">
+          <div class="tilt-inner">
+            <div class="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-slate-800/80 backdrop-blur-md text-[9px] font-cinzel font-bold text-slate-300 tracking-widest uppercase">
+              Platinum Reserve
+            </div>
+            <div class="h-64 rounded-xl overflow-hidden mb-5 bg-[#030712] relative border border-slate-800">
+              <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80" alt="L'Éclat de Platine Iris" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#060e28] via-transparent to-transparent opacity-60"></div>
+            </div>
+            <div class="tilt-element">
+              <p class="text-[10px] font-mono text-blue-300 uppercase tracking-widest">32% PURE OIL EXTRAIT</p>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1 group-hover:text-blue-300 transition-colors">
+                L'Éclat de Platine Iris
+              </h3>
+              <p class="font-cormorant text-slate-300 text-xs mt-1.5 leading-relaxed">
+                Powdery white iris, champagne aldehydes, chilled silver cedar, and cashmeran musk.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-mono block">100ml / 3.4 FL.OZ</span>
+                  <span class="font-cinzel text-xl font-bold text-white">$360</span>
+                </div>
+                <button onclick="window.addToCart({ id: 'eclat-platine', name: 'L\'Éclat de Platine Iris', price: 360, image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=400&q=80' })" class="px-4 py-2 rounded-lg border border-slate-700 hover:border-blue-400 text-slate-200 hover:text-white font-cinzel text-xs font-bold tracking-wider transition-all">
+                  Acquire
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="tilt-card glass-panel rounded-2xl p-5 flex flex-col justify-between group relative">
+          <div class="tilt-inner">
+            <div class="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-amber-950/80 border border-amber-600/40 text-[9px] font-cinzel font-bold text-amber-300 tracking-widest uppercase">
+              Rare Absolu
+            </div>
+            <div class="h-64 rounded-xl overflow-hidden mb-5 bg-[#030712] relative border border-amber-900/30">
+              <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=600&q=80" alt="Aura Royale Sapphire" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#060e28] via-transparent to-transparent opacity-60"></div>
+            </div>
+            <div class="tilt-element">
+              <p class="text-[10px] font-mono text-amber-400 uppercase tracking-widest">42% ROYAL EXTRAIT</p>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1 group-hover:text-amber-300 transition-colors">
+                Aura Royale Sapphire Absolu
+              </h3>
+              <p class="font-cormorant text-slate-300 text-xs mt-1.5 leading-relaxed">
+                Madagascan vanilla bean caviar, golden ambergris, frankincense tear drops, and cedar resin.
+              </p>
+              <div class="mt-4 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-mono block">100ml / 3.4 FL.OZ</span>
+                  <span class="font-cinzel text-xl font-bold text-white">$450</span>
+                </div>
+                <button onclick="window.addToCart({ id: 'aura-royale', name: 'Aura Royale Sapphire Absolu', price: 450, image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=400&q=80' })" class="px-4 py-2 rounded-lg border border-amber-500/40 hover:bg-amber-600/20 text-amber-300 font-cinzel text-xs font-bold tracking-wider transition-all">
+                  Acquire
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 4: THE PACKAGING ART & MASTER CRAFTSMANSHIP
+       (Exact match to screenshot's "THE PACKAGING ART" button requirement)
+       ======================================================================== -->
+  <section id="packaging" class="py-24 relative border-t border-blue-900/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">Uncompromising Perfection</p>
+        <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-silver-gradient mb-4">
+          The Packaging Art
+        </h2>
+        <p class="font-cormorant text-lg sm:text-xl text-slate-300 font-light">
+          An unboxing ritual calibrated to evoke the opening of an imperial treasure vault. Heavy, tactile, cold to the touch, and forever enduring.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Element 1 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 group">
+          <div class="tilt-inner">
+            <div class="w-14 h-14 rounded-2xl border border-blue-500/40 bg-blue-950/60 flex items-center justify-center text-2xl mb-6 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+              👑
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Weight: 240 Grams</span>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1">Solid Silver Alloy Cap</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2 leading-relaxed">
+                Hand-polished by master metalsmiths in Florence. Emits a resonant metallic chime with every uncapping ritual.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Element 2 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 group">
+          <div class="tilt-inner">
+            <div class="w-14 h-14 rounded-2xl border border-blue-500/40 bg-blue-950/60 flex items-center justify-center text-2xl mb-6 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+              💎
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Bespoke Casket</span>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1">Midnight Sapphire Velvet</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2 leading-relaxed">
+                Crush-resistant vault box lined in heavy Italian velvet, protecting the flacon from UV degradation and temperature shifts.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Element 3 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 group">
+          <div class="tilt-inner">
+            <div class="w-14 h-14 rounded-2xl border border-blue-500/40 bg-blue-950/60 flex items-center justify-center text-2xl mb-6 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+              📜
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Provenance</span>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1">Master-Embossed Certificate</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2 leading-relaxed">
+                Printed on 350gsm handmade cotton rag paper, inscribed with your bottle's singular batch serial code and silver wax seal.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Element 4 -->
+        <div class="tilt-card glass-panel rounded-2xl p-6 group">
+          <div class="tilt-inner">
+            <div class="w-14 h-14 rounded-2xl border border-blue-500/40 bg-blue-950/60 flex items-center justify-center text-2xl mb-6 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+              💨
+            </div>
+            <div class="tilt-element">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Micro-Diffusion</span>
+              <h3 class="font-cinzel text-lg font-bold text-white mt-1">0.05ml Silver Atomizer</h3>
+              <p class="font-cormorant text-slate-300 text-sm mt-2 leading-relaxed">
+                Custom high-pressure micro-dispersion pump vaporizing dense extrait oil into an ultra-fine velvet mist.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Interactive Packaging Art Trigger Banner -->
+      <div class="mt-12 p-8 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-950/60 via-slate-900/60 to-blue-950/60 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">🗝️</span>
+          <div>
+            <h4 class="font-cinzel text-lg font-bold text-white">Experience The Flacon Unboxing Ritual</h4>
+            <p class="font-cormorant text-slate-300 text-sm">Inspect the exploded internal architecture of the solid silver flacon.</p>
+          </div>
+        </div>
+        <button onclick="window.togglePackagingModal(true)" class="btn-silver-vault px-6 py-3 rounded-xl text-xs uppercase font-cinzel font-bold">
+          Open Architecture Viewer
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 5: BESPOKE FLACON LAB (Interactive Customizer)
+       ======================================================================== -->
+  <section id="customizer" class="py-24 relative bg-[#04091a]/80 border-t border-blue-900/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left: Interactive Controls -->
+        <div class="lg:col-span-7">
+          <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">Bespoke Atelier</p>
+          <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-silver-gradient mb-6">
+            The Bespoke Flacon Lab
+          </h2>
+          <p class="font-cormorant text-slate-300 text-lg mb-8 font-light">
+            Design your personal sovereign flacon. Select your cap metallurgy, crystal shade, monogram engraving, and extrait concentration.
+          </p>
+
+          <!-- 1. Cap Finish -->
+          <div class="mb-6">
+            <label class="text-xs font-mono uppercase tracking-wider text-slate-300 block mb-2.5">1. Cap Metallurgy</label>
+            <div class="grid grid-cols-3 gap-3">
+              <button onclick="window.updateCustomizer('cap', 'silver')" data-custom-cap="silver" class="p-3 rounded-xl border border-blue-400 bg-blue-600/30 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-white">Solid Silver</span>
+                <span class="text-[10px] text-slate-300 font-mono">Standard Imperial</span>
+              </button>
+              <button onclick="window.updateCustomizer('cap', 'gunmetal')" data-custom-cap="gunmetal" class="p-3 rounded-xl border border-slate-700 hover:border-slate-500 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-white">Obsidian Chrome</span>
+                <span class="text-[10px] text-slate-400 font-mono">Smoky Finish</span>
+              </button>
+              <button onclick="window.updateCustomizer('cap', 'gold')" data-custom-cap="gold" class="p-3 rounded-xl border border-slate-700 hover:border-slate-500 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-amber-300">24K Royal Gold</span>
+                <span class="text-[10px] text-slate-400 font-mono">+$75 Upgrade</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Crystal Tint -->
+          <div class="mb-6">
+            <label class="text-xs font-mono uppercase tracking-wider text-slate-300 block mb-2.5">2. Faceted Crystal Glass Tint</label>
+            <div class="grid grid-cols-4 gap-3">
+              <button onclick="window.updateCustomizer('crystal', 'sapphire')" data-custom-crystal="sapphire" class="p-2.5 rounded-xl border border-blue-400 bg-blue-600/30 text-center transition-all">
+                <div class="w-4 h-4 rounded-full bg-blue-600 mx-auto mb-1 shadow-[0_0_8px_#2563eb]"></div>
+                <span class="text-[10px] font-cinzel text-white block">Sapphire</span>
+              </button>
+              <button onclick="window.updateCustomizer('crystal', 'noir')" data-custom-crystal="noir" class="p-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-center transition-all">
+                <div class="w-4 h-4 rounded-full bg-zinc-900 border border-slate-600 mx-auto mb-1"></div>
+                <span class="text-[10px] font-cinzel text-white block">Noir</span>
+              </button>
+              <button onclick="window.updateCustomizer('crystal', 'platinum')" data-custom-crystal="platinum" class="p-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-center transition-all">
+                <div class="w-4 h-4 rounded-full bg-sky-200 mx-auto mb-1 shadow-[0_0_8px_#bae6fd]"></div>
+                <span class="text-[10px] font-cinzel text-white block">Platinum</span>
+              </button>
+              <button onclick="window.updateCustomizer('crystal', 'amber')" data-custom-crystal="amber" class="p-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-center transition-all">
+                <div class="w-4 h-4 rounded-full bg-amber-500 mx-auto mb-1 shadow-[0_0_8px_#f59e0b]"></div>
+                <span class="text-[10px] font-cinzel text-white block">Amber</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Personalized Engraving -->
+          <div class="mb-6">
+            <label class="text-xs font-mono uppercase tracking-wider text-slate-300 block mb-2.5">
+              3. Silver Plaque Monogram (Up to 5 characters)
+            </label>
+            <div class="flex gap-3">
+              <input type="text" id="engraving-input" value="JCD" maxlength="5" placeholder="JCD" class="bg-black/60 border border-blue-500/40 rounded-xl px-4 py-2.5 text-white font-cinzel text-sm uppercase tracking-widest w-40 focus:outline-none focus:border-blue-400" />
+              <div class="text-xs text-slate-400 font-cormorant flex items-center">
+                Master-chiseled on the polished silver plaque.
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Extrait Concentration -->
+          <div class="mb-8">
+            <label class="text-xs font-mono uppercase tracking-wider text-slate-300 block mb-2.5">4. Oil Extrait Concentration</label>
+            <div class="grid grid-cols-3 gap-3">
+              <button onclick="window.updateCustomizer('concentration', 25)" data-custom-concentration="25" class="p-3 rounded-xl border border-slate-700 hover:border-slate-500 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-white">25% EDP</span>
+                <span class="text-[10px] text-slate-400 font-mono">-$40</span>
+              </button>
+              <button onclick="window.updateCustomizer('concentration', 35)" data-custom-concentration="35" class="p-3 rounded-xl border border-blue-400 bg-blue-600/30 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-white">35% Imperial</span>
+                <span class="text-[10px] text-blue-300 font-mono">Recommended</span>
+              </button>
+              <button onclick="window.updateCustomizer('concentration', 45)" data-custom-concentration="45" class="p-3 rounded-xl border border-slate-700 hover:border-slate-500 text-left transition-all">
+                <span class="block font-cinzel text-xs font-bold text-white">45% Absolu</span>
+                <span class="text-[10px] text-amber-300 font-mono">+$95 Royal Oil</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Price & Action -->
+          <div class="p-6 rounded-2xl border border-blue-500/30 bg-blue-950/40 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-mono text-slate-400 block">TOTAL BESPOKE VALUATION</span>
+              <span id="customizer-final-price" class="font-cinzel text-3xl font-bold text-white">$380</span>
+            </div>
+            <button onclick="window.addToCart({ id: 'bespoke-custom', name: 'Bespoke Imperial Flacon [' + (document.getElementById('engraving-input').value || 'JCD') + ']', price: parseInt(document.getElementById('customizer-final-price').textContent.replace('$', '')), image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80' })" class="btn-silver-vault px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest uppercase">
+              Commission Flacon
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right: Real-time Live Monogram Preview Visualizer -->
+        <div class="lg:col-span-5 flex flex-col items-center">
+          <div class="tilt-card w-full max-w-md glass-panel rounded-3xl p-8 border-blue-500/30 relative shadow-2xl">
+            <div class="tilt-inner text-center">
+              <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest block mb-4">
+                LIVE BESPOKE PREVIEW
+              </span>
+              
+              <!-- Plaque Simulation -->
+              <div class="w-64 h-36 mx-auto rounded-xl border-2 border-blue-400 bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 p-4 flex flex-col justify-center items-center shadow-[0_0_30px_rgba(56,189,248,0.3)] relative overflow-hidden">
+                <div class="absolute inset-1 border border-blue-900/40 rounded-lg pointer-events-none"></div>
+                <span class="font-cinzel text-xs text-slate-800 tracking-[0.25em]">J C D</span>
+                <span id="engraving-preview-text" class="font-cinzel text-3xl font-extrabold text-[#050b1e] tracking-[0.2em] my-1 drop-shadow-sm">
+                  JCD
+                </span>
+                <span class="text-[9px] font-mono text-blue-900 tracking-widest uppercase">
+                  IMPERIAL EXTRAIT • 35%
+                </span>
+              </div>
+
+              <div class="mt-8 text-left space-y-2 border-t border-slate-800 pt-6 text-xs text-slate-300 font-mono">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Boutique:</span>
+                  <span>Paris - Place Vendôme</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Packaging:</span>
+                  <span>Midnight Velvet Casket</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Dispatch:</span>
+                  <span>Insured Courier (Complimentary)</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 6: IMPERIAL SCENT MATCHMAKER QUIZ
+       ======================================================================== -->
+  <section id="quiz" class="py-24 relative border-t border-blue-900/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">The Royal Ritual</p>
+      <h2 class="font-cinzel text-3xl sm:text-5xl font-bold text-silver-gradient mb-4">
+        Find Your Imperial Scent
+      </h2>
+      <p class="font-cormorant text-lg text-slate-300 mb-12 font-light">
+        Answer 3 intuitive questions to discover which JCD Extrait aligns with your presence.
+      </p>
+
+      <!-- Quiz Step 1 -->
+      <div id="quiz-step-1" class="glass-panel p-8 sm:p-12 rounded-3xl border-blue-500/30 text-left">
+        <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Question 1 of 3</span>
+        <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mt-1 mb-6">
+          What aura do you wish to project when you enter the room?
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button onclick="window.selectQuizOption(1, 'aura', 'sovereign')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">👑</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Sovereign &amp; Command</span>
+            <span class="text-xs text-slate-400 font-cormorant">Unmistakable authority and crisp silver chill.</span>
+          </button>
+          <button onclick="window.selectQuizOption(1, 'aura', 'enigmatic')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">🌑</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Enigmatic &amp; Nocturnal</span>
+            <span class="text-xs text-slate-400 font-cormorant">Deep woods, velvet shadows, and smoked oud.</span>
+          </button>
+          <button onclick="window.selectQuizOption(1, 'aura', 'aristocratic')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">✨</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Aristocratic &amp; Radiant</span>
+            <span class="text-xs text-slate-400 font-cormorant">Sparkling champagne aldehydes and powdery iris.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Step 2 (Hidden) -->
+      <div id="quiz-step-2" class="hidden glass-panel p-8 sm:p-12 rounded-3xl border-blue-500/30 text-left">
+        <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Question 2 of 3</span>
+        <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mt-1 mb-6">
+          Which primary note awakens your senses?
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button onclick="window.selectQuizOption(2, 'note', 'silver-iris')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">❄️</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Silver Frost &amp; Orris</span>
+            <span class="text-xs text-slate-400 font-cormorant">Metallic cool, powdery luxury, pure elegance.</span>
+          </button>
+          <button onclick="window.selectQuizOption(2, 'note', 'aged-oud')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">🪵</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Wild Agarwood &amp; Leather</span>
+            <span class="text-xs text-slate-400 font-cormorant">Rich balsamic amber, incense smoke, resin.</span>
+          </button>
+          <button onclick="window.selectQuizOption(2, 'note', 'amber-vanilla')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="text-2xl mb-2 block">🍯</span>
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Ambergris &amp; Bourbon Vanilla</span>
+            <span class="text-xs text-slate-400 font-cormorant">Warm ocean amber, golden rum, hypnotic skin scent.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Step 3 (Hidden) -->
+      <div id="quiz-step-3" class="hidden glass-panel p-8 sm:p-12 rounded-3xl border-blue-500/30 text-left">
+        <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Question 3 of 3</span>
+        <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mt-1 mb-6">
+          Your desired sillage trail:
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <button onclick="window.selectQuizOption(3, 'sillage', 'intense')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Unprecedented Imperial Trail (18+ Hours)</span>
+            <span class="text-xs text-slate-400 font-cormorant">35% Extrait oil density that lingers long after you depart.</span>
+          </button>
+          <button onclick="window.selectQuizOption(3, 'sillage', 'monolithic')" class="p-5 rounded-2xl border border-slate-700 hover:border-blue-400 hover:bg-blue-950/40 text-left transition-all group">
+            <span class="font-cinzel text-sm font-bold text-white block group-hover:text-blue-300">Intimate Magnetic Proximity</span>
+            <span class="text-xs text-slate-400 font-cormorant">Captivates anyone who enters your personal radius.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Result (Revealed) -->
+      <div id="quiz-result" class="hidden glass-panel p-8 sm:p-12 rounded-3xl border-2 border-blue-400 text-center shadow-[0_0_50px_rgba(37,99,235,0.4)]">
+        <span class="text-3xl mb-2 block">✨</span>
+        <span class="text-xs font-mono text-blue-400 uppercase tracking-widest">YOUR ROYAL CONCORDANCE</span>
+        <h3 class="font-cinzel text-3xl font-bold text-white mt-2 mb-3">
+          Silver &amp; Sapphire Imperial Edition
+        </h3>
+        <p class="font-cormorant text-slate-300 text-lg max-w-xl mx-auto mb-8 font-light">
+          Your spirit demands the sovereign balance of frozen silver aldehydes and Tuscan Iris over 40-year aged Cambodian agarwood.
+        </p>
+        <div class="flex justify-center gap-4">
+          <button onclick="window.addToCart({ id: 'imperial-sapphire', name: 'Silver & Sapphire Imperial Edition', price: 380, image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80' })" class="btn-silver-vault px-8 py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest uppercase">
+            Acquire Recommended Flacon
+          </button>
+          <button onclick="window.resetQuiz()" class="px-6 py-3.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white font-cinzel text-xs tracking-wider">
+            Retake Ritual
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 7: CLIENTELE ACCLAIM & CONNOISSEUR TESTIMONIALS
+       ======================================================================== -->
+  <section class="py-24 relative bg-gradient-to-b from-transparent via-[#060e28]/50 to-transparent border-t border-blue-900/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="text-xs uppercase tracking-[0.3em] font-mono text-blue-400 mb-2">Connoisseur Acclaim</p>
+        <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-silver-gradient">
+          The Scent of High Society
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="tilt-card glass-panel p-8 rounded-2xl">
+          <div class="tilt-inner">
+            <div class="text-blue-400 text-sm mb-3">★★★★★</div>
+            <p class="font-cormorant text-slate-200 text-lg italic leading-relaxed mb-6">
+              "The 35% oil concentration is no marketing boast. I applied two sprays of the Silver &amp; Sapphire before the Opera in Milan; twelve hours later at breakfast, the iris and platinum musk were still breathtakingly alive."
+            </p>
+            <div class="tilt-element border-t border-slate-800 pt-4 flex items-center justify-between">
+              <div>
+                <p class="font-cinzel text-xs font-bold text-white">Baroness Caroline de V.</p>
+                <p class="text-[10px] font-mono text-slate-400">Geneva, Switzerland</p>
+              </div>
+              <span class="text-xs font-mono text-blue-400">Verified Patron</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel p-8 rounded-2xl">
+          <div class="tilt-inner">
+            <div class="text-blue-400 text-sm mb-3">★★★★★</div>
+            <p class="font-cormorant text-slate-200 text-lg italic leading-relaxed mb-6">
+              "The weight of the heavy silver cap alone is astonishing. Opening the velvet casket feels like inheriting family crown jewels. JCD Perfumes has redefined Haute Parfumerie."
+            </p>
+            <div class="tilt-element border-t border-slate-800 pt-4 flex items-center justify-between">
+              <div>
+                <p class="font-cinzel text-xs font-bold text-white">Lord Harrison M.</p>
+                <p class="text-[10px] font-mono text-slate-400">Mayfair, London</p>
+              </div>
+              <span class="text-xs font-mono text-blue-400">VIP Collector</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel p-8 rounded-2xl">
+          <div class="tilt-inner">
+            <div class="text-blue-400 text-sm mb-3">★★★★★</div>
+            <p class="font-cormorant text-slate-200 text-lg italic leading-relaxed mb-6">
+              "The frozen silver aldehyde opening paired with 40-year Cambodian oud is an olfactory paradox that shouldn't work—yet it is the single most intoxicating elixir in my collection."
+            </p>
+            <div class="tilt-element border-t border-slate-800 pt-4 flex items-center justify-between">
+              <div>
+                <p class="font-cinzel text-xs font-bold text-white">Tariq Al-Mansoor</p>
+                <p class="text-[10px] font-mono text-slate-400">Dubai, UAE</p>
+              </div>
+              <span class="text-xs font-mono text-blue-400">Vault Member #014</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       SECTION 8: FOOTER & ATELIER LOCATIONS
+       ======================================================================== -->
+  <footer class="border-t border-blue-900/40 bg-[#02050e] pt-16 pb-12 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+        
+        <!-- Col 1: Brand Info -->
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg border border-blue-500/40 bg-blue-950/60 flex items-center justify-center text-blue-400">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
+            <div>
+              <span class="font-cinzel text-base font-bold text-white tracking-[0.2em]">JCD PERFUMES</span>
+            </div>
+          </div>
+          <p class="font-cormorant text-slate-400 text-sm leading-relaxed mb-4">
+            Haute Parfumerie • Luxury Edition. Handcrafted in Grasse and Paris in limited micro-batches of 500 numbered flacons.
+          </p>
+          <div class="flex items-center gap-2 text-xs font-mono text-blue-400">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            <span>Cloud Live Server Synced</span>
+          </div>
+        </div>
+
+        <!-- Col 2: The Vault -->
+        <div>
+          <h4 class="font-cinzel text-xs font-bold text-white uppercase tracking-widest mb-4">The Flacon Vault</h4>
+          <ul class="space-y-2 text-xs text-slate-400 font-sans">
+            <li><a href="#hero" class="hover:text-blue-400 transition-colors">Silver &amp; Sapphire Edition</a></li>
+            <li><a href="#vault" class="hover:text-blue-400 transition-colors">Midnight Noir Oud</a></li>
+            <li><a href="#vault" class="hover:text-blue-400 transition-colors">L'Éclat de Platine</a></li>
+            <li><a href="#vault" class="hover:text-blue-400 transition-colors">Crown Amber Absolu</a></li>
+            <li><a href="#customizer" class="hover:text-blue-400 transition-colors">Bespoke Monogram Lab</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Boutiques -->
+        <div>
+          <h4 class="font-cinzel text-xs font-bold text-white uppercase tracking-widest mb-4">Private Boutiques</h4>
+          <ul class="space-y-2 text-xs text-slate-400 font-mono">
+            <li>PARIS • 28 Place Vendôme</li>
+            <li>LONDON • 14 Old Bond Street</li>
+            <li>DUBAI • The Dubai Mall Fashion Avenue</li>
+            <li>TOKYO • Ginza Six Imperial Tower</li>
+            <li>NEW YORK • 740 Madison Avenue</li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Vault Newsletter -->
+        <div>
+          <h4 class="font-cinzel text-xs font-bold text-white uppercase tracking-widest mb-4">Imperial Allocation</h4>
+          <p class="font-cormorant text-slate-400 text-xs mb-3">
+            Receive private notifications prior to public vault opening for each new harvest batch.
+          </p>
+          <form onsubmit="event.preventDefault(); alert('Your imperial invitation pass has been recorded.');" class="flex gap-2">
+            <input type="email" required placeholder="patron@estate.com" class="bg-black/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-400 flex-1" />
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-cinzel font-bold text-white uppercase">
+              Join
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="border-t border-slate-900 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 font-mono">
+        <p>© 2026 JCD PERFUMES HAUTE PARFUMERIE. All Rights Reserved.</p>
+        <p class="mt-2 sm:mt-0">Silver &amp; Sapphire Imperial Edition • 35% Extrait</p>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ========================================================================
+       SLIDE-OUT ROYAL VAULT CART DRAWER
+       ======================================================================== -->
+  <div id="cart-overlay" onclick="window.toggleCartDrawer(false)" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 transition-opacity duration-300 opacity-0"></div>
+  
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#050c22] border-l border-blue-900/50 shadow-[-20px_0_50px_rgba(0,0,0,0.8)] z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
+    
+    <!-- Drawer Header -->
+    <div class="p-6 border-b border-blue-900/30 flex items-center justify-between bg-blue-950/20">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🗝️</span>
+        <div>
+          <h3 class="font-cinzel text-base font-bold text-white">Your Royal Casket</h3>
+          <p class="text-[10px] font-mono text-blue-400 uppercase">Insured White-Glove Transit</p>
+        </div>
+      </div>
+      <button onclick="window.toggleCartDrawer(false)" class="text-slate-400 hover:text-white p-2">
+        ✕
+      </button>
+    </div>
+
+    <!-- Items List (Managed via JS) -->
+    <div id="cart-items-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Items dynamically populated -->
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-6 border-t border-blue-900/30 bg-blue-950/40 space-y-4">
+      <!-- Free Velvet Gift Wrap Checkbox -->
+      <div class="flex items-center justify-between text-xs text-slate-300 border-b border-slate-800 pb-3">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked class="rounded border-slate-700 text-blue-600 focus:ring-0 bg-black" />
+          <span>Complimentary Midnight Velvet Casket</span>
+        </label>
+        <span class="text-blue-400 font-mono">INCLUDED</span>
+      </div>
+
+      <div class="flex justify-between items-center text-sm">
+        <span class="text-slate-400 font-mono">SUBTOTAL:</span>
+        <span id="cart-subtotal" class="font-cinzel text-xl font-bold text-white">$380</span>
+      </div>
+
+      <button onclick="window.openCheckoutModal()" class="btn-silver-vault w-full py-4 rounded-xl font-cinzel text-xs font-bold tracking-widest uppercase flex items-center justify-center gap-2">
+        <span>☆</span>
+        <span>PROCEED TO IMPERIAL VAULT CHECKOUT</span>
+      </button>
+
+      <p class="text-[10px] text-center text-slate-500 font-mono">
+        Guaranteed 100% Extrait Concentration • Signed Authenticity Certificate
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL: THE PACKAGING ART EXPLODED ARCHITECTURE
+       ======================================================================== -->
+  <div id="packaging-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl transition-opacity duration-300 opacity-0">
+    <div class="modal-content glass-panel border border-blue-400/50 rounded-3xl max-w-2xl w-full p-8 relative shadow-[0_0_60px_rgba(37,99,235,0.4)] scale-95 transition-transform duration-300">
+      
+      <button onclick="window.togglePackagingModal(false)" class="absolute top-6 right-6 text-slate-400 hover:text-white p-2">
+        ✕
+      </button>
+
+      <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Flacon Anatomy</span>
+      <h3 class="font-cinzel text-2xl font-bold text-white mt-1 mb-6">The Architecture of Pure Silver</h3>
+
+      <div class="space-y-4 text-slate-300 font-cormorant text-base leading-relaxed">
+        <div class="p-4 rounded-xl border border-blue-900/40 bg-blue-950/20">
+          <h4 class="font-cinzel text-sm font-bold text-white mb-1">1. 240g Silver Alloy Flacon Cap</h4>
+          <p class="text-xs text-slate-300">Machined with micrometer precision to lock hermetically onto the collar, preventing precious volatile fragrance molecules from evaporating.</p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-blue-900/40 bg-blue-950/20">
+          <h4 class="font-cinzel text-sm font-bold text-white mb-1">2. Octagonal Faceted Crystal Body</h4>
+          <p class="text-xs text-slate-300">Formed with ultra-refractive lead-free crystal with high acoustic resonance. The deep sapphire tint filters harmful photochemical UV rays.</p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-blue-900/40 bg-blue-950/20">
+          <h4 class="font-cinzel text-sm font-bold text-white mb-1">3. Hand-Embossed Cotton Parchment Certificate</h4>
+          <p class="text-xs text-slate-300">Hand-signed by the master nose in Grasse. Includes origin tracing coordinates for the rare Cambodian agarwood harvest.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-800 flex justify-end">
+        <button onclick="window.togglePackagingModal(false)" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-cinzel text-xs font-bold uppercase tracking-wider">
+          Close Inspection
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       MODAL: VIP IMPERIAL CHECKOUT SIMULATION
+       ======================================================================== -->
+  <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-xl transition-opacity duration-300 opacity-0">
+    <div class="glass-panel border border-blue-400/50 rounded-3xl max-w-lg w-full p-8 relative shadow-[0_0_60px_rgba(37,99,235,0.4)]">
+      
+      <button onclick="window.closeCheckoutModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white p-2">
+        ✕
+      </button>
+
+      <!-- Checkout Form -->
+      <form id="checkout-form" onsubmit="window.completeImperialOrder(event)">
+        <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Secure Royal Vault Dispatch</span>
+        <h3 class="font-cinzel text-2xl font-bold text-white mt-1 mb-6">Imperial Delivery Allocation</h3>
+
+        <div class="space-y-4 mb-6">
+          <div>
+            <label class="text-[10px] font-mono text-slate-400 uppercase block mb-1">Recipient Noble Name</label>
+            <input type="text" required placeholder="Lord / Lady / Connoisseur Name" class="w-full bg-black/60 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400" />
+          </div>
+
+          <div>
+            <label class="text-[10px] font-mono text-slate-400 uppercase block mb-1">Imperial Estate Destination</label>
+            <input type="text" required placeholder="Château / Residence / Suite Street Address" class="w-full bg-black/60 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-mono text-slate-400 uppercase block mb-1">City / Country</label>
+              <input type="text" required placeholder="Paris, London, Dubai..." class="w-full bg-black/60 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400" />
+            </div>
+            <div>
+              <label class="text-[10px] font-mono text-slate-400 uppercase block mb-1">Postal Code</label>
+              <input type="text" required placeholder="75001" class="w-full bg-black/60 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400" />
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-blue-900/40 bg-blue-950/30 mb-6 flex justify-between items-center">
+          <span class="text-xs font-mono text-slate-400">Total Investment:</span>
+          <span id="cart-total" class="font-cinzel text-xl font-bold text-white">$380</span>
+        </div>
+
+        <button type="submit" class="btn-silver-vault w-full py-3.5 rounded-xl font-cinzel text-xs font-bold tracking-widest uppercase">
+          Confirm Royal Acquisition
+        </button>
+      </form>
+
+      <!-- Order Success Celebration View (Hidden) -->
+      <div id="order-success-view" class="hidden text-center py-6">
+        <div class="w-16 h-16 rounded-full border-2 border-blue-400 bg-blue-950/60 mx-auto flex items-center justify-center text-3xl mb-4 shadow-[0_0_25px_#2563eb]">
+          👑
+        </div>
+        <span class="text-xs font-mono text-blue-400 uppercase tracking-widest">ACQUISITION RATIFIED</span>
+        <h3 class="font-cinzel text-2xl font-bold text-white mt-1 mb-3">Flacon Reserved in Vault</h3>
+        <p class="font-cormorant text-slate-300 text-sm leading-relaxed mb-6">
+          Your allocation has been registered under Batch Code <span class="font-mono text-blue-300 font-bold">#JCD-7829-IMP</span>. Your silver flacon is being hand-polished and nestled into its midnight sapphire velvet casket.
+        </p>
+        <button onclick="window.closeCheckoutModal()" class="px-6 py-2.5 rounded-xl border border-blue-500/40 text-blue-300 text-xs font-cinzel font-bold hover:bg-blue-600/20">
+          Return to Atelier
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="main.js"></script>
+  <!-- Three.js 3D WebGL Perfume Bottle Canvas -->
+  <script src="three-scene.js"></script>
+
+</body>
+</html>

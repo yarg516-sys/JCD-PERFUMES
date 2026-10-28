@@ -1,0 +1,361 @@
+/* ==========================================================================
+   JCD PERFUMES - HAUTE PARFUMERIE • LUXURY EDITION
+   Bespoke 3D Animated Luxury Experience
+   Palette: Deep Midnight Obsidian, Royal Sapphire Blue, Liquid Pure Silver
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-deep: #030712;
+  --bg-midnight: #060d24;
+  --bg-sapphire-card: rgba(8, 19, 48, 0.75);
+  --bg-glass: rgba(10, 24, 60, 0.55);
+  
+  --sapphire-glow: #1d4ed8;
+  --sapphire-bright: #2563eb;
+  --sapphire-cyan: #38bdf8;
+  --sapphire-vibrant: #1e60ff;
+  
+  --silver-white: #ffffff;
+  --silver-bright: #f8fafc;
+  --silver-medium: #cbd5e1;
+  --silver-dark: #94a3b8;
+  --silver-border: rgba(203, 213, 225, 0.22);
+  --sapphire-border: rgba(37, 99, 235, 0.35);
+
+  --font-serif: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-subserif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-deep);
+  color: var(--silver-bright);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+body {
+  background: radial-gradient(circle at 50% 15%, #0d214f 0%, #060e28 40%, #030712 90%);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #1d4ed8, #60a5fa, #cbd5e1);
+  border-radius: 999px;
+}
+
+/* Typography styles */
+.font-cinzel {
+  font-family: var(--font-serif);
+}
+
+.font-cormorant {
+  font-family: var(--font-subserif);
+}
+
+/* Ambient canvas background */
+#fog-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+}
+
+/* Glowing cursor follower */
+.ambient-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(56, 189, 248, 0.05) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.5s ease;
+  filter: blur(40px);
+}
+
+/* Gradients matching screenshot */
+.text-sapphire-gradient {
+  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #1e40af 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(37, 99, 235, 0.6));
+}
+
+.text-silver-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 40%, #cbd5e1 75%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+.text-silver-shimmer {
+  background: linear-gradient(90deg, #94a3b8 0%, #ffffff 50%, #94a3b8 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: silverShine 4s linear infinite;
+}
+
+@keyframes silverShine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Screenshot Exact Match Button Styles */
+.btn-silver-vault {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 45%, #cbd5e1 85%, #94a3b8 100%);
+  color: #050b1e;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.35), 0 8px 32px rgba(3, 7, 18, 0.7);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-silver-vault::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  transition: all 0.6s ease;
+}
+
+.btn-silver-vault:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.6), 0 12px 36px rgba(0, 0, 0, 0.8);
+  border-color: #ffffff;
+}
+
+.btn-silver-vault:hover::after {
+  left: 140%;
+}
+
+.btn-packaging-art {
+  background: rgba(6, 14, 38, 0.8);
+  backdrop-filter: blur(12px);
+  color: #ffffff;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  border: 1px solid rgba(203, 213, 225, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-packaging-art:hover {
+  background: rgba(14, 32, 85, 0.9);
+  border-color: rgba(56, 189, 248, 0.8);
+  box-shadow: 0 0 25px rgba(37, 99, 235, 0.45);
+  transform: translateY(-2px);
+  color: #f8fafc;
+}
+
+/* Glassmorphic Luxury Cards */
+.glass-panel {
+  background: linear-gradient(135deg, rgba(8, 20, 52, 0.72) 0%, rgba(4, 10, 28, 0.85) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  box-shadow: 0 20px 50px rgba(2, 6, 23, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-interactive {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-panel-interactive:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 25px 60px rgba(2, 6, 23, 0.85), 0 0 30px rgba(37, 99, 235, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 3D Tilt Card Base */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+.tilt-inner {
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+}
+
+.tilt-element {
+  transform: translateZ(35px);
+}
+
+.tilt-element-deep {
+  transform: translateZ(60px);
+}
+
+/* Specular Glare Effect on 3D Tilt */
+.tilt-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+/* Floating animation */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: floatGentle 7s ease-in-out 2s infinite;
+}
+
+/* Pulsing sapphire glow badge */
+@keyframes sapphirePulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4), inset 0 0 8px rgba(56, 189, 248, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.8), inset 0 0 14px rgba(56, 189, 248, 0.6);
+  }
+}
+
+.badge-sapphire {
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(14, 34, 88, 0.6);
+  animation: sapphirePulse 3.5s infinite;
+}
+
+/* 3D WebGL Canvas Container */
+.webgl-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .webgl-container {
+    height: 720px;
+  }
+}
+
+#perfume-canvas {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: grab;
+}
+
+#perfume-canvas:active {
+  cursor: grabbing;
+}
+
+/* Atmospheric mist rings */
+.mist-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  pointer-events: none;
+  animation: rotateRing 30s linear infinite;
+}
+
+@keyframes rotateRing {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05);
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Kinetic Animated Headline Letters */
+.letter-anim {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px) rotateX(-45deg);
+  animation: letterReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes letterReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+/* Sound Bar Equalizer Icon */
+.sound-bar {
+  display: inline-block;
+  width: 3px;
+  background: #38bdf8;
+  border-radius: 2px;
+  margin: 0 1.5px;
+  animation: soundBounce 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes soundBounce {
+  0% { height: 4px; }
+  100% { height: 16px; }
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+  .webgl-container {
+    height: 480px;
+  }
+}
